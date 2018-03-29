@@ -1,4 +1,4 @@
-#include "merge_files.h"
+#include "merge_files.hh"
 #include "core/reactor.hh"
 #include "core/fstream.hh"
 #include <iostream>
@@ -8,7 +8,7 @@ merge_files::merge_files()
 
 }
 
-void merge_files::Process(std::vector<sstring> FileNames, size_t RecordSize)
+future<> merge_files::Process(std::vector<sstring> FileNames, size_t RecordSize)
 {
 	std::vector<future<>> fs;
 	std::vector<str_record*> RecordsList;
@@ -19,14 +19,21 @@ void merge_files::Process(std::vector<sstring> FileNames, size_t RecordSize)
 	}
 
 	//auto p = make_shared(std::move(fs));
-	when_all(fs.begin(), fs.end()).then([RecordsList](std::vector<future<>> results) {
+	return when_all(fs.begin(), fs.end()).then([RecordsList](std::vector<future<>> results) {
 		auto comp = []( str_record* a, str_record* b ) { return a->compare(*b); };
 		std::priority_queue<str_record*, std::vector<str_record*>, decltype( comp) > pq(comp);
 
 		for (auto&& RecordReady: RecordsList) {
 			pq.push(RecordReady);
 		}
-		//return make_ready_future<>();
-	});
 
+		return make_ready_future<>();
+	});
 }
+
+#if 0
+future<> merge_files::NextFragment(str_record* fragment, sstring destName, size_t destOffset)
+{
+	return
+}
+#endif

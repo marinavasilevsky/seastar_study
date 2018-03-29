@@ -1,13 +1,14 @@
 #ifndef MERGE_FILES_H
 #define MERGE_FILES_H
 
-#include "str_record.h"
+#include "str_record.hh"
 
 class merge_files
 {
 public:
 	merge_files();
-	/*future<>*/void Process(std::vector<sstring> FileNames, size_t RecordSize);
+	future<> Process(std::vector<sstring> FileNames, size_t RecordSize);
+//	future<> NextFragment(str_record* fragment, sstring destName, size_t destOffset);
 private:
 	future<> SaveRecord(str_record* val); // other context
 

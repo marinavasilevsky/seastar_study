@@ -1,22 +1,31 @@
 #include "core/app-template.hh"
 #include "core/reactor.hh"
 #include <iostream>
-#include "str_record.h"
-#include "test_fragments.h"
+#include "str_record.hh"
+#include "test_fragments.hh"
+#include "merge_files.hh"
+#include "sort_fragments.hh"
+
+#define RECORD_SIZE 4096// Should be configurable
 
 int main(int argc, char** argv) {
     seastar::app_template app;
 	 return app.run(argc, argv, [] {
 		 test_fragments *pTest = new test_fragments();
-		 return pTest->CreateFiles(5, 4096).then([pTest] (std::vector<sstring> results) {
-			 //delete pTest;
-			 std::cout << "Hello world";
-			 return make_ready_future<>();
+		 return pTest->CreateFiles(5, RECORD_SIZE*2).then([pTest] (std::vector<sstring> results) {
+			 sort_fragments SortF;
+			 return SortF.CreateFragments(RECORD_SIZE, results[0], "/tmp").then ([results] (std::vector<sstring> fragments) {
+
+				 //delete pTest;
+				 std::cout << "Hello world";
+
+				 merge_files mf;
+				 mf.Process(fragments, RECORD_SIZE).then([] () {
+					 return make_ready_future<>();
+				 });
+			 });
 		 });
-#if 0
-    });
-#endif
-});
+	 });
 }
 
 

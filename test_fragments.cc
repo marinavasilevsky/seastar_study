@@ -1,4 +1,4 @@
-#include "test_fragments.h"
+#include "test_fragments.hh"
 #include "core/reactor.hh"
 #include "core/fstream.hh"
 #include <iostream>
@@ -40,7 +40,7 @@ future<> test_fragments::CreateFragment(sstring name, size_t size)
 								open_flags::rw | open_flags::create | open_flags::truncate).then([this, size,str,name] (file f) {
 		std::cout << name << "open done" << std::endl;
 		std::unique_ptr<char[], free_deleter> tmp;
-		tmp = allocate_aligned_buffer<char>(size, 4096);
+		tmp = allocate_aligned_buffer<char>(size, IO_BUFFER_ALIGN);
 		char *Data = tmp.get();
 		size_t i;
 		int num;

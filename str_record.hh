@@ -1,6 +1,8 @@
 #ifndef STR_RECORD_H
 #define STR_RECORD_H
 
+#include "core/reactor.hh"
+#include "core/fstream.hh"
 #include "core/sstring.hh"
 #include <iostream>
 #include <queue>
@@ -12,11 +14,15 @@ class str_record
 {
 public:
 	str_record(const sstring& fname);
-	const sstring& GetStr() const { return Str; }
+	const temporary_buffer<char> &GetStr() const { return Str; }
+
+	void SetReadFilePos(uint64_t  val) { ReadFilePos = val; }
 	future<> LoadRecord(size_t size); // other context
 	bool compare(const str_record &other) const;
 private:
-	sstring Str;
+	temporary_buffer<char> Str;
+	//sstring Str;
+	//std::unique_ptr<char[], free_deleter> Str;
 	sstring FileName;
 	uint64_t ReadFilePos;
 };

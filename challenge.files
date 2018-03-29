@@ -1,7 +1,9 @@
+test_fragments.hh
+merge_files.hh
+sort_fragments.cc
+sort_fragments.hh
+str_record.hh
 test_fragments.cc
-test_fragments.h
 merge_files.cc
-merge_files.h
 str_record.cc
-str_record.h
 hello.cc
