@@ -7,12 +7,16 @@ int main(int argc, char** argv) {
     seastar::app_template app;
     app.run(argc, argv, [] {
 				//std::cout << "Hello world\n";
-
-		 auto record1 = new str_record(sstring("orange"), sstring("f1"));
-		 auto record2 = new str_record(sstring("apple"), sstring("f2"));
+/*
+		 auto record1 = new str_record(sstring("f1"));
+		 auto record2 = new str_record(sstring("f2"));
+		 */
+		 /*
 		 bool b = record2->compare(*record1);
-		 std::cout << "Hello world = " << b;
+		 */
+		 std::cout << "Hello world = ";// << b;
             return seastar::make_ready_future<>();
+
     });
 }
 
