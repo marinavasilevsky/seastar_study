@@ -2,22 +2,21 @@
 #include "core/reactor.hh"
 #include <iostream>
 #include "str_record.h"
+#include "test_fragments.h"
 
 int main(int argc, char** argv) {
     seastar::app_template app;
-    app.run(argc, argv, [] {
-				//std::cout << "Hello world\n";
-/*
-		 auto record1 = new str_record(sstring("f1"));
-		 auto record2 = new str_record(sstring("f2"));
-		 */
-		 /*
-		 bool b = record2->compare(*record1);
-		 */
-		 std::cout << "Hello world = ";// << b;
-            return seastar::make_ready_future<>();
-
+	 return app.run(argc, argv, [] {
+		 test_fragments *pTest = new test_fragments();
+		 return pTest->CreateFiles(5, 4096).then([pTest] (std::vector<sstring> results) {
+			 //delete pTest;
+			 std::cout << "Hello world";
+			 return make_ready_future<>();
+		 });
+#if 0
     });
+#endif
+});
 }
 
 

@@ -1,3 +1,5 @@
+test_fragments.cc
+test_fragments.h
 merge_files.cc
 merge_files.h
 str_record.cc

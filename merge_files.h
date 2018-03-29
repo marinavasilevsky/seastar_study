@@ -7,7 +7,7 @@ class merge_files
 {
 public:
 	merge_files();
-	/*future<>*/void Process(std::vector<sstring> FileNames);
+	/*future<>*/void Process(std::vector<sstring> FileNames, size_t RecordSize);
 private:
 	future<> SaveRecord(str_record* val); // other context
 
