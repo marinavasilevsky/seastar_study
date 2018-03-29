@@ -1,3 +1,5 @@
+merge_files.cc
+merge_files.h
 str_record.cc
 str_record.h
 hello.cc
