@@ -19,18 +19,11 @@ future<std::vector<sstring>> test_fragments::CreateFiles(int NumOfFiles, size_t 
 
 	std::cout << "test_fragments::CreateFiles --->" << std::endl;
 	sstring data;
-	for(i=0;i<5;i++) {
+	for(i=0;i<NumOfFiles;i++) {
 		sstring name = sstring("/tmp/test")+to_sstring(i);
 		FileNames.emplace_back(name);
 		fs.emplace_back(std::move( CreateFragment(name, size)));
 	}
-	/*
-			 auto record1 = new str_record(sstring("f1"));
-			 auto record2 = new str_record(sstring("f2"));
-			 */
-			 /*
-			 bool b = record2->compare(*record1);
-			 */
 
 	return when_all(fs.begin(), fs.end()).then([FileNames] (std::vector<future<>> results) {
 		std::cout << "test_fragments::CreateFiles done" << std::endl;
@@ -53,17 +46,13 @@ future<> test_fragments::CreateFragment(sstring name, size_t size)
 		int num;
 		for(i=0;i<size;i++) {
 			num = rand();
+			if(num==(int)'\0')
+				num++;
 			Data[i] = num;
 		}
 
-		//temporary_buffer<char> buf = std::move(tmp);
-		//p = buf.get();
-		//buf_size = buf.size();
-		//truncate = true;
-
 		return f.dma_write(0,Data,size).then([f, name] (size_t s) {
 			std::cout << name << "write result=" << s << std::endl;
-			//f.close();
 			return make_ready_future<>();
 		});
 	});
