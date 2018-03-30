@@ -2,6 +2,8 @@
 #include "test_fragments.hh"
 #include "str_record.hh"
 #include "core/sstring.hh"
+#include <boost/range/algorithm/sort.hpp>
+#include "core/temporary_buffer.hh"
 
 sort_fragments::sort_fragments()
 {
@@ -29,20 +31,38 @@ future<> sort_fragments::LoadFragment(size_t FragmentSize, sstring SrcFileName, 
 		return open_file_dma(DestFileName,
 									open_flags::rw | open_flags::create | open_flags::truncate).then([FragmentSize,rec, DestFileName] (file f) {
 			std::cout << "sort_fragments::LoadFragment" << DestFileName << " open done" << std::endl;
-			const temporary_buffer<char> &Str = rec->GetStr();
-			if(!Str.empty()) {
 
+			if(rec->size()>0) {
+				/*
+				FILE *dbgFile = fopen("/tmp/dbg_frag.bin", "wb");
+				fwrite(Str.get(), 1, Str.size(), dbgFile);
+				fclose(dbgFile);
+*/
 				//std::sort(Str.begin(), Str.end());
 
-				sstring sortResult = to_sstring(Str.get());
-				std::sort(sortResult.begin(), sortResult.end()); // There is obsolete memory copy after sorting and before
+				uint8_t* sortResult = rec->get_write();
+				std::vector<uint8_t> sortVector (sortResult, sortResult+rec->size());
+
+				FILE *dbgFile = fopen("/tmp/dbg_vector.bin", "wb");
+				fwrite(sortVector.data(), 1, rec->size(), dbgFile);
+				fclose(dbgFile);
+
+
+
+				std::sort(sortVector.begin(), sortVector.end()); // There is obsolete memory copy after sorting and before
 																				 // because of aligned temporary buffers!
 																				 // But when writing sstring I get exception
+
+				dbgFile = fopen("/tmp/dbg_vector1.bin", "wb");
+				fwrite(sortVector.data(), 1, rec->size(), dbgFile);
+				fclose(dbgFile);
+
 
 				std::unique_ptr<char[], free_deleter> tmp;
 				tmp = allocate_aligned_buffer<char>(FragmentSize, IO_BUFFER_ALIGN);
 				char *Data = tmp.get();
-				memcpy(Data, sortResult.data(), FragmentSize);
+				memcpy(Data, sortVector.data(), FragmentSize);
+				// Dma_write looks buggy I tried posix write and I get different files!
 				return f.dma_write(0,Data,FragmentSize).then([rec, DestFileName, f] (size_t s) {
 					std::cout << "sort_fragments::LoadFragment" << DestFileName << "delete rec, write result=" << s << std::endl;
 

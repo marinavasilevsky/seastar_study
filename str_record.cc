@@ -5,7 +5,7 @@ str_record::str_record(const sstring &fname) :FileName(fname),  ReadFilePos(0)
 
 bool str_record::compare(const str_record &other) const
 {
-	return Str.operator ==(other.GetStr());
+	return Str.operator ==(other.Str);
 }
 
 future<> str_record::LoadRecord(size_t size)

@@ -14,7 +14,8 @@ class str_record
 {
 public:
 	str_record(const sstring& fname);
-	const temporary_buffer<char> &GetStr() const { return Str; }
+	uint8_t* get_write() { return (uint8_t*)Str.get_write(); }
+	size_t size() { return Str.size(); }
 
 	void SetReadFilePos(uint64_t  val) { ReadFilePos = val; }
 	future<> LoadRecord(size_t size); // other context
