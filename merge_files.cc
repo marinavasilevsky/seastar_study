@@ -11,7 +11,7 @@ merge_files::merge_files()
 future<> merge_files::Process(std::vector<sstring> FileNames, size_t RecordSize)
 {
 	std::vector<future<>> fs;
-	std::vector<str_record*> RecordsList;
+
 	for (auto&& name: FileNames) {
 		str_record* rec = new str_record(name);
 		RecordsList.emplace_back(rec);
@@ -19,9 +19,10 @@ future<> merge_files::Process(std::vector<sstring> FileNames, size_t RecordSize)
 	}
 
 	//auto p = make_shared(std::move(fs));
-	return when_all(fs.begin(), fs.end()).then([RecordsList](std::vector<future<>> results) {
-		auto comp = []( str_record* a, str_record* b ) { return a->compare(*b); };
-		std::priority_queue<str_record*, std::vector<str_record*>, decltype( comp) > pq(comp);
+	return when_all(fs.begin(), fs.end()).then([this](std::vector<future<>> results) {
+		//auto comp = []( str_record* a, str_record* b ) { return a->compare(*b); };
+		//	std::priority_queue<str_record*, std::vector<str_record*>, decltype( comp) > pq(comp);
+		//pq = std::priority_queue<str_record*, std::vector<str_record*>, decltype( comp) >(comp);
 
 		for (auto&& RecordReady: RecordsList) {
 			pq.push(RecordReady);

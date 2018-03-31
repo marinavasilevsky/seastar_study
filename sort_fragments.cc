@@ -36,14 +36,17 @@ future<std::vector<sstring>> sort_fragments::CreateFragments(size_t _FragmentSiz
 						std::cout << "sort_fragments::CreateFragments add " << name  << std::endl;
 					}
 
-					name = FragmentsList.front();
-					std::cout << "sort_fragments::CreateFragments Before Load " << name  << std::endl;
-
-					fragment *Frag = new fragment(name, 0, FragmentSize, SrcFileName);
-					return Frag->LoadFragment().then([this, Frag] () {
-						delete Frag;
-						return make_ready_future<std::vector<sstring>>(FragmentsList);
-					});
+					//name = FragmentsList.front();
+					return do_for_each(FragmentsList, [this] (sstring name) {
+						fragment *Frag = new fragment(name, 0, FragmentSize, SrcFileName);
+						std::cout << "sort_fragments::CreateFragments Before Load " << name  << std::endl;
+						return Frag->LoadFragment().then([this, Frag] () {
+							delete Frag;
+							return make_ready_future<>();
+						});
+					}).then ( [this] () {
+					return make_ready_future<std::vector<sstring>>(FragmentsList);
+				});
 				});
 			});
 		});
