@@ -9,23 +9,30 @@
 #include "core/future.hh"
 
 using namespace seastar;
+#define RECORD_SIZE 4096// Should be configurable
 
 class str_record
 {
 public:
 	str_record(const sstring& fname);
+	//str_record();
+	//str_record(const str_record &other);
+	//const str_record& operator =(const str_record &other);
+
 	uint8_t* get_write() { return (uint8_t*)Str.get_write(); }
 	size_t size() { return Str.size(); }
 
 	void SetReadFilePos(uint64_t  val) { ReadFilePos = val; }
 	future<> LoadRecord(size_t size); // other context
 	bool compare(const str_record &other) const;
+
 private:
 	temporary_buffer<char> Str;
 	//sstring Str;
 	//std::unique_ptr<char[], free_deleter> Str;
 	sstring FileName;
 	uint64_t ReadFilePos;
+	//void Copy(const str_record &other);
 };
 
 struct CompareRecord : public std::binary_function<str_record*, str_record*, bool>

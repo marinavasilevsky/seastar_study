@@ -11,10 +11,15 @@ class sort_fragments
 {
 public:
 	sort_fragments();
-	future<std::vector<sstring>> CreateFragments(size_t FragmentSize, sstring SrcFileName, sstring outDirName);
+	future<std::vector<sstring>> CreateFragments(size_t _FragmentSize, sstring _SrcFileName, sstring _outDirName);
 
 private:
-	future<> LoadFragment(size_t FragmentSize, sstring SrcFileName, size_t SrcOffset, sstring DestFileName);
+	std::vector<sstring> FragmentsList;
+	size_t FragmentSize;
+	sstring SrcFileName;
+	sstring OutDirName;
+
+	future<> LoadFragment(size_t _SrcOffset, sstring DestFileName);
 };
 
 #endif // FRAGMENT_SRC_FILE_H
