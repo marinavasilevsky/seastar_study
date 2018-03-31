@@ -25,13 +25,14 @@ public:
 	void SetReadFilePos(uint64_t  val) { ReadFilePos = val; }
 	future<> LoadRecord(size_t size); // other context
 	bool compare(const str_record &other) const;
-
+	future<bool> IsLoadAvailable(size_t size);
 private:
 	temporary_buffer<char> Str;
 	//sstring Str;
 	//std::unique_ptr<char[], free_deleter> Str;
 	sstring FileName;
 	uint64_t ReadFilePos;
+	uint64_t ReadFileSize;
 	//void Copy(const str_record &other);
 };
 

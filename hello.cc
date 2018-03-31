@@ -15,13 +15,14 @@ int main(int argc, char** argv) {
 			 return SortF->CreateFragments(RECORD_SIZE*2, results[0], "/tmp").then ([results] (std::vector<sstring> fragments) {
 
 				 //delete pTest;
-				 std::cout << "Hello world";
-/*
+				 std::cout << "Hello world " << fragments.size() << std::endl;
+
 				 merge_files mf;
-				 mf.Process(fragments, RECORD_SIZE).then([] () {
+				 return mf.Process(fragments, RECORD_SIZE).then([] () {
+					 std::cout << "The end " << std::endl;
 					 return make_ready_future<>();
 				 });
-				 */
+
 			 });
 		 });
 	 });

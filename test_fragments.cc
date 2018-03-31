@@ -27,7 +27,7 @@ future<std::vector<sstring>> test_fragments::CreateFiles(int NumOfFiles, size_t 
 
 	return when_all(fs.begin(), fs.end()).then([FileNames] (std::vector<future<>> results) {
 		std::cout << "test_fragments::CreateFiles done" << std::endl;
-		return make_ready_future<std::vector<sstring>> (std::move(FileNames));
+		return make_ready_future<std::vector<sstring>> (FileNames);
 	});
 }
 
