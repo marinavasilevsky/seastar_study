@@ -5,6 +5,8 @@
 #include <iostream>
 #include <queue>
 #include "core/future.hh"
+#include "core/file.hh"
+#include "str_record.hh"
 
 using namespace seastar;
 class sort_fragments
@@ -18,8 +20,6 @@ private:
 	size_t FragmentSize;
 	sstring SrcFileName;
 	sstring OutDirName;
-
-	future<> LoadFragment(size_t _SrcOffset, sstring DestFileName);
 };
 
 #endif // FRAGMENT_SRC_FILE_H

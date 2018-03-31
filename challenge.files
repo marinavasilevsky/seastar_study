@@ -1,3 +1,5 @@
+fragment.cc
+fragment.hh
 test_fragments.hh
 merge_files.hh
 sort_fragments.cc

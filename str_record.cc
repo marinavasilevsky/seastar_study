@@ -63,8 +63,8 @@ future<> str_record::LoadRecord(size_t size)
 				}
 				ReadFilePos+=size;
 				return make_ready_future<>();
-			}).finally([&f]() {
-				std::cout << "str_record::LoadRecord finally"<< std::endl;
+			}).finally([&f, this]() {
+				std::cout << "str_record::LoadRecord finally offs "<< ReadFilePos << std::endl;
 				return f.close();
 			});
 			std::cout << "str_record::LoadRecord 1"<< std::endl;

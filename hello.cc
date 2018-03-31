@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 		 test_fragments *pTest = new test_fragments();
 		 return pTest->CreateFiles(5, RECORD_SIZE*4).then([pTest] (std::vector<sstring> results) {
 			 sort_fragments *SortF = new sort_fragments();
-			 return SortF->CreateFragments(RECORD_SIZE, results[0], "/tmp").then ([results] (std::vector<sstring> fragments) {
+			 return SortF->CreateFragments(RECORD_SIZE*2, results[0], "/tmp").then ([results] (std::vector<sstring> fragments) {
 
 				 //delete pTest;
 				 std::cout << "Hello world";
