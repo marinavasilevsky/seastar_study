@@ -40,7 +40,7 @@ future<> merge_files::Process(std::vector<sstring> FileNames, size_t _RecordSize
 		auto comp = [](str_record* a, str_record* b ) { return (!(a->compare(*b))); };
 		std::sort(RecordsList.begin(), RecordsList.end(),comp );
 		std::cout << "merge_files::Process" << " sort done" << std::endl;
-		return make_ready_future<>();
+		return SaveNext();
 	});
 }
 

@@ -17,9 +17,10 @@ int main(int argc, char** argv) {
 				 //delete pTest;
 				 std::cout << "Hello world " << fragments.size() << std::endl;
 
-				 merge_files mf;
-				 return mf.Process(fragments, RECORD_SIZE).then([] () {
+				 merge_files *mf = new merge_files();
+				 return mf->Process(fragments, RECORD_SIZE).then([garbage = std::move(mf)] () {
 					 std::cout << "The end " << std::endl;
+					 delete garbage;
 					 return make_ready_future<>();
 				 });
 
