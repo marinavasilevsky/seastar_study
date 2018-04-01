@@ -37,8 +37,10 @@ future<std::vector<sstring>> sort_fragments::CreateFragments(size_t _FragmentSiz
 					}
 
 					//name = FragmentsList.front();
+					SrcOffset = 0;
 					return do_for_each(FragmentsList, [this] (sstring name) {
-						fragment *Frag = new fragment(name, 0, FragmentSize, SrcFileName);
+						fragment *Frag = new fragment(name, SrcOffset, FragmentSize, SrcFileName);
+						SrcOffset+=FragmentSize;
 						std::cout << "sort_fragments::CreateFragments Before Load " << name  << std::endl;
 						return Frag->LoadFragment().then([this, Frag] () {
 							delete Frag;

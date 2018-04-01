@@ -18,6 +18,7 @@ public:
 private:
 	std::vector<sstring> FragmentsList;
 	size_t FragmentSize;
+	size_t SrcOffset;
 	sstring SrcFileName;
 	sstring OutDirName;
 };
