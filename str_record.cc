@@ -55,14 +55,14 @@ future<bool> str_record::IsLoadAvailable(size_t size)
 			return do_with(std::move(f), [this, size](file& f) {
 				return f.size().then([&f, this, size](uint64_t FileSize) {
 					ReadFileSize = FileSize;
-					if(ReadFilePos+size>ReadFileSize) {
-						return make_ready_future<bool>(false);
-					}
-					return make_ready_future<bool>(true);
+					std::cout << "str_record::IsLoadAvailable close file" << std::endl;
+					return f.close().then ([this, size] () {
+						if(ReadFilePos+size>ReadFileSize) {
+							return make_ready_future<bool>(false);
+						}
+						return make_ready_future<bool>(true);
+					});
 				});
-			}).finally([&f]() {
-				std::cout << "str_record::IsLoadAvailable finally" << std::endl;
-				return f.close();
 			});
 		});
 	}

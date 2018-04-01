@@ -10,6 +10,7 @@ merge_files::merge_files()
 
 future<> merge_files::Process(std::vector<sstring> FileNames, size_t _RecordSize)
 {
+	DestOffset = 0;
 	std::cout << "merge_files::Process ---> " << FileNames.size() << std::endl;
 	RecordSize = _RecordSize;
 	std::vector<future<>> fs;
@@ -52,16 +53,21 @@ future<> merge_files::SaveNext()
 		std::cout << "merge_files::Process" << " sort done" << std::endl;
 
 		str_record* RecSave = RecordsList.back();
-		RecordsList.pop_back();
-		return SaveRecord(RecSave).then ([this, RecSave] () {
+
+		return SaveRecord(RecSave).then ([this] () {
+			str_record* RecSave = RecordsList.back();
 			return RecSave->IsLoadAvailable(RecordSize).then([this, RecSave] (bool ready) {
+				std::cout << "merge_files::SaveNext ready=" << ready << std::endl;
 				if(!ready) {
+					std::cout << "merge_files::SaveNext pop out" << std::endl;
+					RecordsList.pop_back();
 					delete RecSave;
 					return SaveNext();
 				}
 				else {
-					return RecSave->LoadRecord(RecordSize).then([this, RecSave] () {
-						RecordsList.emplace_back(RecSave);
+					std::cout << "merge_files::SaveNext before load" << std::endl;
+					return RecSave->LoadRecord(RecordSize).then([this] () {
+						std::cout << "merge_files::SaveNext after load" << std::endl;
 						return SaveNext();
 					});
 				}
@@ -75,7 +81,7 @@ future<> merge_files::SaveRecord(str_record* Rec)
 	std::cout << "merge_files::SaveRecord --->" << std::endl;
 	return open_file_dma("/tmp/out.bin",
 								open_flags::rw | open_flags::create).then([this, Rec] (file f) mutable {
-		std::cout << "sort_fragments::FlushRecordsList" << " open done" << std::endl;
+		std::cout << "merge_files::SaveRecord" << " open done" << std::endl;
 		DestFile = f;
 
 		return DestFile.dma_write(DestOffset,/*Data*/Rec->get_write(), RecordSize).then([this] (size_t s) {
@@ -83,6 +89,7 @@ future<> merge_files::SaveRecord(str_record* Rec)
 			std::cout << "merge_files::SaveRecord offs=" << DestOffset << "write result=" << s << std::endl;
 			DestOffset+=RecordSize;
 			return DestFile.close().then ([] () {
+				std::cout << "merge_files::SaveRecord close" << std::endl;
 				return make_ready_future<>();
 			});
 		});
