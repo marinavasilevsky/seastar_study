@@ -37,9 +37,6 @@ future<> merge_files::Process(std::vector<sstring> FileNames, size_t _RecordSize
 			pq.push(RecordReady);
 		}
 #endif
-		auto comp = [](str_record* a, str_record* b ) { return (!(a->compare(*b))); };
-		std::sort(RecordsList.begin(), RecordsList.end(),comp );
-		std::cout << "merge_files::Process" << " sort done" << std::endl;
 		return SaveNext();
 	});
 }
@@ -50,6 +47,10 @@ future<> merge_files::SaveNext()
 	if(RecordsList.empty())
 		return make_ready_future<>();
 	else {
+		auto comp = [](str_record* a, str_record* b ) { return (!(a->compare(*b))); };
+		std::sort(RecordsList.begin(), RecordsList.end(),comp );
+		std::cout << "merge_files::Process" << " sort done" << std::endl;
+
 		str_record* RecSave = RecordsList.back();
 		RecordsList.pop_back();
 		return SaveRecord(RecSave).then ([this, RecSave] () {
