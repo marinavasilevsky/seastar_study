@@ -1,0 +1,35 @@
+# build.ninja
+SEASTAR = /media/Linux-data/private/seastar
+BUILD_DIR=/media/Linux-data/private/challenge/build
+
+rule ninja
+    command = /usr/bin/ninja -C $subdir
+
+rule cxx.debug
+  command = /opt/scylladb/bin/g++-7 `pkg-config --cflags --libs $SEASTAR/build/release/seastar.pc` -c -o $out $in
+  description = CXX $out
+  depfile = $out.d
+
+rule cyy.debug
+  command = /opt/scylladb/bin/g++-7 `pkg-config --cflags --libs $SEASTAR/build/release/seastar.pc` -c -o $out $in
+  description = CXX $out
+  depfile = $out.d
+
+pool link_pool
+    depth = 1
+
+rule link.debug
+  command = /opt/scylladb/bin/g++-7 -fuse-ld=gold -v `pkg-config --cflags --libs $SEASTAR/build/release/seastar.pc` $in
+  description = LINK $out
+  pool = link_pool
+
+
+build $BUILD_DIR/hello.o: cxx.debug hello.cc
+build $BUILD_DIR/str_record.o: cxx.debug str_record.cc
+build $BUILD_DIR/merge_files.o: cxx.debug merge_files.cc
+build $BUILD_DIR/test_fragments.o: cxx.debug test_fragments.cc
+build $BUILD_DIR/sort_fragments.o: cxx.debug sort_fragments.cc
+build $BUILD_DIR/fragment.o: cxx.debug fragment.cc
+
+build a.o : link.debug $BUILD_DIR/hello.o $BUILD_DIR/str_record.o $BUILD_DIR/merge_files.o $BUILD_DIR/test_fragments.o $BUILD_DIR/sort_fragments.o $BUILD_DIR/fragment.o
+
