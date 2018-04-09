@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
 			 return SortF->CreateFragments(RECORD_SIZE*2, results[0], "/tmp").then ([results] (std::vector<sstring> fragments) { // This is step 1 of the sorting - fragmentation
 																																										// If previous step created more files, I am using only the first created file
 																																										// The first parameter is size of fragment, second is input file
+																																										// If you like to test with another input, you can pass absolute name second parameter (instead of results[0]) to this method
 
 				 //delete pTest;
 				 std::cout << "Hello world " << fragments.size() << std::endl;
